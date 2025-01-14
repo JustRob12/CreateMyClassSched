@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Download size styles */
+.mobile-download {
+  width: 390px !important;
+  min-width: 390px !important;
+  transform-origin: top left;
+}
+
+.mobile-download .grid {
+  grid-template-columns: 1fr !important;
+  gap: 1rem !important;
+}
+
+.mobile-download .flex-col {
+  min-width: 100% !important;
+}
+
+.pc-download {
+  width: 1200px !important;
+  min-width: 1200px !important;
+}
+
+/* Hide action buttons when downloading */
+.mobile-download .group-hover\:opacity-100,
+.pc-download .group-hover\:opacity-100 {
+  opacity: 0 !important;
+}
+
+/* Hide default AM/PM display from time input */
+input[type="time"]::-webkit-datetime-edit-ampm-field {
+  display: none;
+}
+
+input[type="time"] {
+  -moz-appearance: textfield;
+}
+
+/* Remove spinner buttons */
+input[type="time"]::-webkit-inner-spin-button,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+/* Responsive styles */
+@media (max-width: 640px) {
+  .calendar-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
