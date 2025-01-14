@@ -19,23 +19,33 @@ const ScheduleForm = ({ onAddSchedule, initialData, editIndex }) => {
 
   useEffect(() => {
     if (initialData) {
-      // Convert old format to new format if necessary
-      const newFormData = {
-        title: initialData.title,
-        instructor: initialData.instructor || '',
-        room: initialData.room || '',
-        backgroundColor: initialData.backgroundColor,
-        schedules: initialData.schedules || [{
-          day: initialData.day,
-          startTime: initialData.startTime.slice(0, 5),
-          endTime: initialData.endTime.slice(0, 5)
-        }]
-      };
-      setFormData(newFormData);
+      setFormData(initialData);
     } else {
       setFormData(emptyForm);
     }
   }, [initialData]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const schedulesList = formData.schedules.map(schedule => ({
+      title: formData.title,
+      instructor: formData.instructor,
+      room: formData.room,
+      backgroundColor: formData.backgroundColor,
+      day: schedule.day,
+      startTime: schedule.startTime,
+      endTime: schedule.endTime
+    }));
+    onAddSchedule(schedulesList);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
   const getAmPm = (time) => {
     if (!time) return 'AM';
@@ -96,36 +106,13 @@ const ScheduleForm = ({ onAddSchedule, initialData, editIndex }) => {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Create an array of schedules with all the necessary information
-    const schedules = formData.schedules.map(schedule => ({
-      title: formData.title,
-      instructor: formData.instructor,
-      room: formData.room,
-      backgroundColor: formData.backgroundColor,
-      day: schedule.day,
-      startTime: schedule.startTime,
-      endTime: schedule.endTime
-    }));
-    onAddSchedule(schedules);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
   return (
     <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         {/* Form Header */}
         <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-gray-800">
-            {editIndex !== null ? 'Schedule' : 'Edit Schedule'}
+            {editIndex !== null ? 'Edit Schedule' : 'Add Schedule'}
           </h2>
         </div>
 

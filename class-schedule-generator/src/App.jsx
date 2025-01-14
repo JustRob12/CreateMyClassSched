@@ -7,27 +7,44 @@ function App() {
   const [showForm, setShowForm] = useState(false);
   const [editingSchedule, setEditingSchedule] = useState(null);
 
-  const handleAddSchedule = (newSchedule) => {
+  const handleAddSchedule = (newSchedules) => {
     if (editingSchedule !== null) {
-      // Update existing schedule
-      setSchedules(schedules.map((schedule, index) => 
-        index === editingSchedule ? newSchedule : schedule
-      ));
-      setEditingSchedule(null);
+      // Get the original schedule being edited
+      const originalSchedule = schedules[editingSchedule];
+      
+      // Remove all schedules with the same title as the one being edited
+      const remainingSchedules = schedules.filter(schedule => 
+        schedule.title !== originalSchedule.title
+      );
+      
+      // Add all the new schedules
+      setSchedules([...remainingSchedules, ...newSchedules]);
     } else {
-      // Add new schedule
-      setSchedules([...schedules, newSchedule]);
+      // Add new schedules
+      setSchedules([...schedules, ...newSchedules]);
     }
     setShowForm(false);
+    setEditingSchedule(null);
   };
 
   const handleEdit = (index) => {
+    // Get the schedule being edited
+    const scheduleToEdit = schedules[index];
+    
+    // Find all schedules with the same title
+    const relatedSchedules = schedules.filter(schedule => 
+      schedule.title === scheduleToEdit.title
+    );
+    
     setEditingSchedule(index);
     setShowForm(true);
   };
 
   const handleDelete = (index) => {
-    setSchedules(schedules.filter((_, i) => i !== index));
+    // Only delete the specific schedule at the given index
+    setSchedules(prevSchedules => 
+      prevSchedules.filter((_, i) => i !== index)
+    );
   };
 
   return (
@@ -49,17 +66,25 @@ function App() {
         <div className="flex flex-col lg:flex-row gap-8">
           {showForm && (
             <div className="lg:w-1/3">
-              <ScheduleForm 
-                onAddSchedule={handleAddSchedule} 
-                initialData={editingSchedule !== null ? schedules[editingSchedule] : null}
-                isEditing={editingSchedule !== null}
+              <ScheduleForm
+                onAddSchedule={handleAddSchedule}
+                initialData={editingSchedule !== null ? {
+                  ...schedules[editingSchedule],
+                  schedules: schedules
+                    .filter(s => s.title === schedules[editingSchedule].title)
+                    .map(s => ({
+                      day: s.day,
+                      startTime: s.startTime,
+                      endTime: s.endTime
+                    }))
+                } : null}
+                editIndex={editingSchedule}
               />
             </div>
           )}
-          
           <div className={showForm ? 'lg:w-2/3' : 'w-full'}>
-            <Calendar 
-              schedules={schedules} 
+            <Calendar
+              schedules={schedules}
               onEdit={handleEdit}
               onDelete={handleDelete}
             />
@@ -67,7 +92,7 @@ function App() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default App
