@@ -2,52 +2,81 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Download size styles */
-.mobile-download {
-  width: 390px !important;
-  min-width: 390px !important;
-  transform-origin: top left;
+@layer utilities {
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes modalSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .animate-slideIn {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  .animate-modalSlideIn {
+    animation: modalSlideIn 0.3s ease-out;
+  }
 }
 
-.mobile-download .grid {
-  grid-template-columns: 1fr !important;
-  gap: 1rem !important;
-}
-
-.mobile-download .flex-col {
-  min-width: 100% !important;
-}
-
-.pc-download {
-  width: 1200px !important;
-  min-width: 1200px !important;
-}
-
-/* Hide action buttons when downloading */
-.mobile-download .group-hover\:opacity-100,
-.pc-download .group-hover\:opacity-100 {
-  opacity: 0 !important;
-}
-
-/* Hide default AM/PM display from time input */
+/* Hide default AM/PM display */
 input[type="time"]::-webkit-datetime-edit-ampm-field {
-  display: none;
+  display: none !important;
 }
 
-input[type="time"] {
-  -moz-appearance: textfield;
+input[type="time"]::-webkit-clear-button {
+  display: none !important;
 }
 
-/* Remove spinner buttons */
-input[type="time"]::-webkit-inner-spin-button,
-input[type="time"]::-webkit-calendar-picker-indicator {
-  display: none;
+input[type="time"]::-webkit-inner-spin-button {
+  display: none !important;
 }
 
-/* Responsive styles */
-@media (max-width: 640px) {
-  .calendar-container {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+/* Firefox */
+@-moz-document url-prefix() {
+  input[type="time"] {
+    -moz-appearance: textfield;
+  }
+  
+  input[type="time"]::-moz-clear-button {
+    display: none;
+  }
+}
+
+/* Print styles to ensure colors are preserved */
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 }

@@ -11,7 +11,7 @@ const ScheduleForm = ({ onAddSchedule, initialData, editIndex }) => {
     title: '',
     instructor: '',
     room: '',
-    backgroundColor: '#4F46E5',
+    backgroundColor: '#000000',
     schedules: [{ ...emptySchedule }]
   };
 
@@ -37,6 +37,8 @@ const ScheduleForm = ({ onAddSchedule, initialData, editIndex }) => {
       endTime: schedule.endTime
     }));
     onAddSchedule(schedulesList);
+    // Reset form after submission
+    setFormData(emptyForm);
   };
 
   const handleChange = (e) => {
@@ -93,7 +95,14 @@ const ScheduleForm = ({ onAddSchedule, initialData, editIndex }) => {
   const addSchedule = () => {
     setFormData(prev => ({
       ...prev,
-      schedules: [{ ...emptySchedule }, ...prev.schedules]
+      schedules: [
+        { ...emptySchedule }, // Add new empty schedule at the top
+        ...prev.schedules.map(schedule => ({ // Keep existing schedules with their data
+          day: schedule.day,
+          startTime: schedule.startTime,
+          endTime: schedule.endTime
+        }))
+      ]
     }));
   };
 
@@ -106,12 +115,22 @@ const ScheduleForm = ({ onAddSchedule, initialData, editIndex }) => {
     }
   };
 
+  const days = [
+    { value: 'Monday', label: 'Monday' },
+    { value: 'Tuesday', label: 'Tuesday' },
+    { value: 'Wednesday', label: 'Wednesday' },
+    { value: 'Thursday', label: 'Thursday' },
+    { value: 'Friday', label: 'Friday' },
+    { value: 'Saturday', label: 'Saturday' },
+    { value: 'Sunday', label: 'Sunday' }
+  ];
+
   return (
-    <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
+    <form onSubmit={handleSubmit} className="max-w-3xl mx-auto animate-slideIn">
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
         {/* Form Header */}
-        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-800">
+        <div className="px-6 py-4 bg-gray-100 border-b border-gray-200">
+          <h2 className="text-xl font-semibold text-black">
             {editIndex !== null ? 'Edit Schedule' : 'Add Schedule'}
           </h2>
         </div>
@@ -119,8 +138,8 @@ const ScheduleForm = ({ onAddSchedule, initialData, editIndex }) => {
         {/* Form Content */}
         <div className="p-6 space-y-6">
           {/* Course Title */}
-          <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+          <div className="space-y-1">
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
               Course Title
             </label>
             <input
@@ -129,7 +148,7 @@ const ScheduleForm = ({ onAddSchedule, initialData, editIndex }) => {
               name="title"
               value={formData.title}
               onChange={handleChange}
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition-all duration-200"
               required
             />
           </div>
@@ -137,8 +156,8 @@ const ScheduleForm = ({ onAddSchedule, initialData, editIndex }) => {
           {/* Two Column Layout */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Instructor */}
-            <div>
-              <label htmlFor="instructor" className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="space-y-1">
+              <label htmlFor="instructor" className="block text-sm font-medium text-gray-700">
                 Instructor
               </label>
               <input
@@ -148,13 +167,13 @@ const ScheduleForm = ({ onAddSchedule, initialData, editIndex }) => {
                 placeholder="TBA"
                 value={formData.instructor}
                 onChange={handleChange}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition-all duration-200"
               />
             </div>
 
             {/* Room */}
-            <div>
-              <label htmlFor="room" className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="space-y-1">
+              <label htmlFor="room" className="block text-sm font-medium text-gray-700">
                 Room
               </label>
               <input
@@ -164,7 +183,7 @@ const ScheduleForm = ({ onAddSchedule, initialData, editIndex }) => {
                 value={formData.room}
                 placeholder="TBA"
                 onChange={handleChange}
-                className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition-all duration-200"
               />
             </div>
           </div>
@@ -172,25 +191,27 @@ const ScheduleForm = ({ onAddSchedule, initialData, editIndex }) => {
           {/* Multiple Schedules Section */}
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-sm font-medium text-gray-700">Class Schedule</h3>
+              <h3 className="text-sm font-medium text-black">Class Schedule</h3>
               <button
                 type="button"
                 onClick={addSchedule}
-                className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-all duration-200 hover:scale-105"
               >
                 Add Schedule
               </button>
             </div>
 
-            {[...formData.schedules].reverse().map((schedule, index) => (
-              <div key={formData.schedules.length - 1 - index} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+            {formData.schedules.map((schedule, index) => (
+              <div key={index} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                 <div className="flex justify-between items-start mb-4">
-                  <h4 className="text-sm font-medium text-gray-700">Schedule {formData.schedules.length - index}</h4>
+                  <h4 className="text-sm font-medium text-black">
+                    Schedule {formData.schedules.length - index}
+                  </h4>
                   {formData.schedules.length > 1 && (
                     <button
                       type="button"
-                      onClick={() => removeSchedule(formData.schedules.length - 1 - index)}
-                      className="text-red-600 hover:text-red-700 text-sm"
+                      onClick={() => removeSchedule(index)}
+                      className="text-black hover:text-gray-700 text-sm"
                     >
                       Remove
                     </button>
@@ -199,21 +220,19 @@ const ScheduleForm = ({ onAddSchedule, initialData, editIndex }) => {
 
                 {/* Day Selection */}
                 <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-black mb-1">
                     Day
                   </label>
                   <select
                     value={schedule.day}
-                    onChange={(e) => handleScheduleChange(formData.schedules.length - 1 - index, 'day', e.target.value)}
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                    onChange={(e) => handleScheduleChange(index, 'day', e.target.value)}
+                    className="block w-full rounded-md border border-gray-400/50 shadow-sm focus:border-black focus:ring-black"
                     required
                   >
                     <option value="">Select a day</option>
-                    <option value="Monday">Monday</option>
-                    <option value="Tuesday">Tuesday</option>
-                    <option value="Wednesday">Wednesday</option>
-                    <option value="Thursday">Thursday</option>
-                    <option value="Friday">Friday</option>
+                    {days.map(day => (
+                      <option key={day.value} value={day.value}>{day.label}</option>
+                    ))}
                   </select>
                 </div>
 
@@ -221,23 +240,23 @@ const ScheduleForm = ({ onAddSchedule, initialData, editIndex }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Start Time */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-black mb-1">
                       Start Time
                     </label>
                     <div className="relative">
                       <input
                         type="time"
                         value={schedule.startTime}
-                        onChange={(e) => handleScheduleChange(formData.schedules.length - 1 - index, 'startTime', e.target.value)}
-                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 pr-16"
+                        onChange={(e) => handleScheduleChange(index, 'startTime', e.target.value)}
+                        className="block w-full rounded-md border border-gray-400/50 shadow-sm focus:border-black focus:ring-black pr-16 appearance-none"
                         required
                       />
                       <button
                         type="button"
-                        onClick={() => toggleAmPm(formData.schedules.length - 1 - index, 'startTime')}
+                        onClick={() => toggleAmPm(index, 'startTime')}
                         className="absolute inset-y-0 right-0 flex items-center hover:bg-gray-200 transition-colors"
                       >
-                        <span className="text-sm font-medium text-gray-600 bg-gray-100 px-3 py-1 rounded-r-md border-l h-full flex items-center">
+                        <span className="text-sm font-medium text-black bg-gray-100 px-3 py-1 rounded-r-md border-l h-full flex items-center">
                           {getAmPm(schedule.startTime)}
                         </span>
                       </button>
@@ -246,23 +265,23 @@ const ScheduleForm = ({ onAddSchedule, initialData, editIndex }) => {
 
                   {/* End Time */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-black mb-1">
                       End Time
                     </label>
                     <div className="relative">
                       <input
                         type="time"
                         value={schedule.endTime}
-                        onChange={(e) => handleScheduleChange(formData.schedules.length - 1 - index, 'endTime', e.target.value)}
-                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 pr-16"
+                        onChange={(e) => handleScheduleChange(index, 'endTime', e.target.value)}
+                        className="block w-full rounded-md border border-gray-400/50 shadow-sm focus:border-black focus:ring-black pr-16 appearance-none"
                         required
                       />
                       <button
                         type="button"
-                        onClick={() => toggleAmPm(formData.schedules.length - 1 - index, 'endTime')}
+                        onClick={() => toggleAmPm(index, 'endTime')}
                         className="absolute inset-y-0 right-0 flex items-center hover:bg-gray-200 transition-colors"
                       >
-                        <span className="text-sm font-medium text-gray-600 bg-gray-100 px-3 py-1 rounded-r-md border-l h-full flex items-center">
+                        <span className="text-sm font-medium text-black bg-gray-100 px-3 py-1 rounded-r-md border-l h-full flex items-center">
                           {getAmPm(schedule.endTime)}
                         </span>
                       </button>
@@ -275,7 +294,7 @@ const ScheduleForm = ({ onAddSchedule, initialData, editIndex }) => {
 
           {/* Color Picker */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-black mb-1">
               Background Color
             </label>
             <div className="flex items-center gap-3">
@@ -283,18 +302,18 @@ const ScheduleForm = ({ onAddSchedule, initialData, editIndex }) => {
                 type="color"
                 value={formData.backgroundColor}
                 onChange={(e) => handleChange({ target: { name: 'backgroundColor', value: e.target.value } })}
-                className="w-12 h-12 rounded-lg cursor-pointer"
+                className="w-12 h-12 rounded-lg cursor-pointer border border-gray-400/50"
               />
             </div>
           </div>
         </div>
 
         {/* Form Footer */}
-        <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+        <div className="px-6 py-4 bg-gray-100 border-t border-gray-200">
           <div className="flex justify-end">
             <button
               type="submit"
-              className="px-6 py-2.5 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+              className="w-full px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-all duration-200 hover:scale-105 transform active:scale-95"
             >
               {editIndex !== null ? 'Update Schedule' : 'Add Schedule'}
             </button>
